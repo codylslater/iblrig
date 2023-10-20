@@ -3,12 +3,25 @@ Changelog
 
 -------------------------------
 
+8.11.2
+------
+* make custom_tasks optional
+* repair lost entry-point for iblrig wizard
+* fetch remote tags only if connected to internet
+
+8.11.1
+------
+* add GUI options for AdvancedChoiceWorld
+
 8.11.0
 ------
 * add check for availability of internet
 * add proper CLI for data transfer scripts
-* move update-check to separate thread
-* detect dud (less than 42 trials) and offer deletion
+* add control for disabling Bpod status LED
+* skip initialization of existing Bpod singleton
+* remember settings for status LED and GUI position
+* move update-check to separate thread 
+* detect duds (less than 42 trials) and offer deletion
 * various small bugfixes
 
 8.10.2

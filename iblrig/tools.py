@@ -3,12 +3,13 @@ import re
 import shutil
 import socket
 import subprocess
+from collections.abc import Callable
 from pathlib import Path
-from typing import Callable, Any, Optional
+from typing import Any
 
 from iblutil.util import setup_logger
 
-logger = setup_logger("iblrig")
+logger = setup_logger('iblrig')
 
 
 def ask_user(prompt: str, default: bool = False) -> bool:
@@ -44,19 +45,51 @@ def ask_user(prompt: str, default: bool = False) -> bool:
             return False
 
 
-def get_anydesk_id(silent: bool = False) -> Optional[str]:
+def get_anydesk_id(silent: bool = False) -> str | None:
+    """
+    Retrieve the AnyDesk ID of the current machine.
+
+    Parameters
+    ----------
+    silent : bool, optional
+        If True, suppresses exceptions and logs them instead.
+        If False (default), raises exceptions.
+
+    Returns
+    -------
+    str or None
+        The AnyDesk ID as a formatted string (e.g., '123 456 789') if successful,
+        or None on failure.
+
+    Raises
+    ------
+    FileNotFoundError
+        If the AnyDesk executable is not found.
+    subprocess.CalledProcessError
+        If an error occurs while executing the AnyDesk command.
+    StopIteration
+        If the subprocess output is empty.
+    UnicodeDecodeError
+        If there is an issue decoding the subprocess output.
+
+    Notes
+    -----
+    The function attempts to find the AnyDesk executable and retrieve the ID using the command line.
+    On success, the AnyDesk ID is returned as a formatted string. If silent is True, exceptions are logged,
+    and None is returned on failure. If silent is False, exceptions are raised on failure.
+    """
     anydesk_id = None
     try:
         if cmd := shutil.which('anydesk'):
-            cmd = Path(cmd)
+            pass
         elif os.name == 'nt':
-            cmd = Path(os.environ["ProgramFiles(x86)"], 'AnyDesk', 'anydesk.exe')
-        if not cmd.exists():
-            raise FileNotFoundError("AnyDesk executable not found")
+            cmd = str(Path(os.environ['PROGRAMFILES(X86)'], 'AnyDesk', 'anydesk.exe'))
+        if cmd is None or not Path(cmd).exists():
+            raise FileNotFoundError('AnyDesk executable not found')
 
         proc = subprocess.Popen([cmd, '--get-id'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
         if proc.stdout and re.match(r'^\d{10}$', id_string := next(proc.stdout).decode()):
-            anydesk_id = '{:,}'.format(int(id_string)).replace(',', ' ')
+            anydesk_id = f'{int(id_string):,}'.replace(',', ' ')
     except (FileNotFoundError, subprocess.CalledProcessError, StopIteration, UnicodeDecodeError) as e:
         if silent:
             logger.debug(e, exc_info=True)
@@ -95,7 +128,7 @@ def static_vars(**kwargs) -> Callable[..., Any]:
 
 
 @static_vars(return_value=None)
-def internet_available(host: str = "8.8.8.8", port: int = 53, timeout: int = 3, force_update: bool = False):
+def internet_available(host: str = '8.8.8.8', port: int = 53, timeout: int = 3, force_update: bool = False):
     """
     Check if the internet connection is available.
 
@@ -126,8 +159,9 @@ def internet_available(host: str = "8.8.8.8", port: int = 53, timeout: int = 3, 
         return internet_available.return_value
     try:
         socket.setdefaulttimeout(timeout)
-        socket.socket(socket.AF_INET, socket.SOCK_STREAM).connect((host, port))
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((host, port))
         internet_available.return_value = True
-    except socket.error:
+    except OSError:
         internet_available.return_value = False
     return internet_available.return_value

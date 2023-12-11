@@ -38,4 +38,8 @@ app.log
 iblrig/_version.py
 *.code-workspace
 
-.coverage
+.coverage*
+coverage.xml
+
+devices/camera_setup/*.layout
+devices/camera_recordings/*.layout

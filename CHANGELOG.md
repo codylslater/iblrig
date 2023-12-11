@@ -1,6 +1,76 @@
 Changelog
 ---------
 
+
+8.12.14
+-------
+* unit-tests and linting
+
+8.12.13
+-------
+* fix problem with corrupt acquisition descriptions in history
+
+8.12.12
+-------
+* skipped
+
+8.12.11
+-------
+* hotfix for creation of bonsai layout-file
+* separated installers for Spinnaker SDK and PySpin
+
+8.12.10
+-------
+* ignore user-side changes to bonsai layouts (for camera workflows only)
+* error message if rig-name is not defined in Alyx
+* populate delegate users
+* the usual: minor fixes, clean-ups and unit-tests
+
+8.12.9
+------
+* usability improvements for "Show Training Level" tool
+* ignore unused behavior ports
+* remove unnecessary dependencies
+
+8.12.8
+------
+* fix incorrect limits & unit for adaptive gain in trainingChoiceWorld  
+* usability improvements for "Show Training Level" tool
+
+8.12.7
+------
+* online plot: fix line colors and add legends
+* do not show Bonsai editor during session
+
+8.12.6
+------
+* reverting TTL on trial end introduced with PR #504, release 8.9.0
+* general code maintenance (unit-tests, doc-strings, type-hints, removal of dead code) 
+
+8.12.5
+------
+* add a tools menu in the wizard to get training level from v7 sessions to ease transition
+
+8.12.4
+------
+* updated online-plots
+
+8.12.3
+------
+* bugfix: getting training status of subject not present on local server
+* skipping of bpod initialization now optional (used in GUI)
+* disable button for status LED if not supported by hardware
+* tests, type-hints, removal of dead code
+
+8.12.2
+------
+* bugfix: rollback skipping of bpod initialization (possible source of integer overflow)
+* removal of dead code
+
+8.12.1
+------
+* bugfix: remember ability for setting the status LED
+
 8.12.0
 ------
 * add a trainingPhaseChoiceWorld task to fix the training levels
